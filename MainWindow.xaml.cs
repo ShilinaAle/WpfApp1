@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 
 namespace WpfApp1
 {
@@ -10,6 +11,10 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            
+            ViewModel vm = new ViewModel(this);
+            vm.MainViewModel();
         }
+
     }
 }

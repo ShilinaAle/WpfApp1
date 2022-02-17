@@ -5,9 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="221,95,0,0" VerticalAlignment="Top" Width="75"/>
+        Title="Check URL" Height="400" Width="800"
+        MinHeight="300" MinWidth="600">
+    <Grid Background="#FFF2FFE5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*" ></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
 
+        <Button Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0">Загрузить URL</Button>
+        <Button  Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1">Остановить загрузку</Button>
+
+        <Border Background="White" Grid.Column="1" Grid.RowSpan="5" Margin="30" Padding="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" CornerRadius="10">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"></DropShadowEffect>
+            </Border.Effect>
+
+            <ListView x:Name="listView">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Tags" DisplayMemberBinding="{Binding Count}"/>
+                        <GridViewColumn Header="URL" DisplayMemberBinding="{Binding Url}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
     </Grid>
 </Window>
