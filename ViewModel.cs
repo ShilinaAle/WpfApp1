@@ -25,17 +25,17 @@ namespace WpfApp1
                 window.listView.Items.Add(new Model { Count = i, Url = "some url" });
             }
 
-            try
-            {
-                foreach (string line in File.ReadLines(@"..\..\..\text.txt"))
-                {
+            //try
+            //{
+            //    foreach (string line in File.ReadLines(@"..\..\..\text.txt"))
+            //    {
 
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Авторизация не пройдена");
-            }
+            //    }
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("Авторизация не пройдена");
+            //}
 
         }
     }

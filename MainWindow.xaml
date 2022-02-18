@@ -6,7 +6,11 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Title="Check URL" Height="400" Width="800"
-        MinHeight="300" MinWidth="600">
+        MinHeight="300" MinWidth="600" >
+    <!--<Window.Resources>
+        <local:ViewModel x:Key="viewModel"/>
+    </Window.Resources>-->
+
     <Grid Background="#FFF2FFE5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*" ></ColumnDefinition>
