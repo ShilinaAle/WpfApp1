@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using WpfApp1.Command;
 using WpfApp1.Model;
 
@@ -15,21 +17,27 @@ namespace WpfApp1.ViewModel
     class VM : INotifyPropertyChanged
     {
         private UrlTags utags;
+        private ObservableCollection<UrlTags> _urlWithTagsList;
+        public Dispatcher _dispatcher;
+        private ICommand _StartCommand;
+        private ICommand _StopCommand;
+        bool _cancel = false;
+        bool _canStart = true;
+
+
         public UrlTags Utags
         {
             get { return utags; }
             set
             {
-                utags = value; OnPropertyChanged("Utags");
+                utags = value; 
+                OnPropertyChanged("Utags");
             }
         }
-        private ObservableCollection<UrlTags> _urlWithTagsList;
+        
         public ObservableCollection<UrlTags> UrlWithTagsList
         {
-            get
-            {
-                return _urlWithTagsList;
-            }
+            get { return _urlWithTagsList; }
             set
             {
                 _urlWithTagsList = value;
@@ -40,48 +48,29 @@ namespace WpfApp1.ViewModel
         public VM()
         {
             UrlWithTagsList = new ObservableCollection<UrlTags>();
-            //Generating();
+            _dispatcher = Dispatcher.CurrentDispatcher;
         }
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        
+        public async Task StartAsync()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private ICommand _SubmitCommand;
-        public ICommand SubmitCommand
-        {
-            get
-            {
-                if (_SubmitCommand == null)
-                {
-                    _SubmitCommand = new MyCommand(SubmitExecute, CanSubmitExecute);
-                }
-                return _SubmitCommand;
-            }
-        }
-
-
-        private void SubmitExecute(object parameter)
-        {
-            UrlWithTagsList.Clear();
-            //foreach (var i in Enumerable.Range(1, 10))
-            //{
-            //    UrlWithTagsList.Add(new Model.UrlWithTags("some url", i));
-            //}
-            Start();
-        }
-        //#region
-        public void Start()
-        {
-            // Read the file and display it line by line.  
+            int i = 0;
             foreach (string line in File.ReadLines(@"..\..\text.txt"))
             {
-                //if (IsUrlValid(line))
-                //{
-                Process.Start("explorer.exe", line);
-                UrlWithTagsList.Add(new UrlTags(line, 1));
-                //}
+                if (_cancel)
+                    break;
+
+                i++;
+                await Task.Run(() =>
+                {
+                    if (IsUrlValid(line))
+                    {
+                        _dispatcher.Invoke(new Action(() =>
+                        {
+                            Process.Start("explorer.exe", line);
+                            _urlWithTagsList.Add(new UrlTags(line, i));
+                        }));
+                    }
+                });
             }
         }
 
@@ -91,7 +80,6 @@ namespace WpfApp1.ViewModel
             {
                 WebClient wc = new WebClient();
                 string HTMLSource = wc.DownloadString(url);
-                //Console.WriteLine($"url {url} is correct");
                 return true;
             }
             catch (Exception)
@@ -101,18 +89,41 @@ namespace WpfApp1.ViewModel
             }
         }
 
-        //#endregion
 
-
-
-
-
-        private bool CanSubmitExecute(object parameter)
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public ICommand StartCommand
+        {
+            get
+            {
+                if (_StartCommand == null)
+                {
+                    _StartCommand = new MyCommand(StartExecute, CanStartExecute);
+                }
+                return _StartCommand;
+            }
+        }
+
+
+        private async void StartExecute(object parameter)
+        {
+            UrlWithTagsList.Clear();
+            _cancel = false;
+            _canStart = false;
+            await StartAsync();
+        }
+
+        private bool CanStartExecute(object parameter)
+        {
+            if (_canStart == false)
+                return false;
             return true;
         }
 
-        private ICommand _StopCommand;
         public ICommand StopCommand
         {
             get
@@ -128,22 +139,15 @@ namespace WpfApp1.ViewModel
 
         private void StopExecute(object parameter)
         {
-            UrlWithTagsList.Clear();
+            _cancel = true;
+            _canStart = true;
         }
 
         private bool CanStopExecute(object parameter)
         {
-            if (UrlWithTagsList.Count == 0)
+            if (UrlWithTagsList.Count == 0 || _cancel == true)
                 return false;
             return true;
         }
-
-        //public static void Generating()
-        //{
-        //    foreach (var i in Enumerable.Range(1, 10))
-        //    {
-        //        UrlWithTagsList.Add(new Model.UrlWithTags { Tags = i, Url = "some url" });
-        //    }
-        //}
     }
 }
