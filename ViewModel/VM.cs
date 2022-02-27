@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WpfApp1.Command;
@@ -26,6 +27,7 @@ namespace WpfApp1.ViewModel
         int _countOfUrl = 0;
         string _maxUrl = "";
         int _maxTags = -1;
+        int _invalidTags = 0;
         
         public VM()
         {
@@ -44,11 +46,11 @@ namespace WpfApp1.ViewModel
                 await Task.Run(() =>
                 {
                     CountOfUrl++;
-                    if (UrlProcessing.IsUrlValid(line))
+                    if (IsUrlValid(line))
                     {
                         _dispatcher.Invoke(new Action(() =>
                         {
-                            int count = UrlProcessing.CountTeg(line);
+                            int count = CountTeg(line);
                             if (count > _maxTags)
                             {
                                 MaxUrl = line;
@@ -59,6 +61,47 @@ namespace WpfApp1.ViewModel
                         }));
                     }
                 });
+            }
+        }
+
+        public int CountTeg(string url)
+        {
+            var hc = new HttpClient();
+            var result = hc.GetStringAsync(url).Result;
+
+            Regex regex = new Regex(@"<a ");
+            MatchCollection matches = regex.Matches(result);
+            if (matches.Count > 0)
+            {
+                return matches.Count;
+            }
+            Console.WriteLine("Совпадений не найдено");
+            return 0;
+        }
+
+        public bool IsUrlValid(string url)
+        {
+            try
+            {
+                WebClient wc = new WebClient();
+                string HTMLSource = wc.DownloadString(url);
+                return true;
+            }
+            catch (Exception)
+            {
+                InvalidTags++;
+                return false;
+            }
+        }
+
+        
+        public int InvalidTags
+        {
+            get { return _invalidTags; }
+            set
+            {
+                _invalidTags = value;
+                OnPropertyChanged();
             }
         }
 
@@ -126,6 +169,7 @@ namespace WpfApp1.ViewModel
             _cancel = false;
             _canStart = false;
             CountOfUrl = 0;
+            InvalidTags = 0;
             await StartAsync();
             _cancel = true;
             _canStart = true;
