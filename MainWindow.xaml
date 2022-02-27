@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
+        xmlns:vm="clr-namespace:WpfApp1.ViewModel"
         mc:Ignorable="d"
         Title="Check URL" Height="400" Width="800"
         MinHeight="300" MinWidth="600" >
-    <!--<Window.Resources>
-        <local:ViewModel x:Key="viewModel"/>
-    </Window.Resources>-->
+    <Window.DataContext>
+        <vm:VM/>
+    </Window.DataContext>
 
     <Grid Background="#FFF2FFE5">
         <Grid.ColumnDefinitions>
@@ -24,15 +25,15 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Button Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0">Загрузить URL</Button>
+        <Button Command="{Binding SubmitCommand }" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0">Загрузить URL</Button>
         <Button  Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1">Остановить загрузку</Button>
-
+        <!--<TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding Clicks}"></TextBlock>-->
         <Border Background="White" Grid.Column="1" Grid.RowSpan="5" Margin="30" Padding="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" CornerRadius="10">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"></DropShadowEffect>
             </Border.Effect>
 
-            <ListView x:Name="listView">
+            <ListView x:Name="listView" ItemsSource="{Binding UrlWithTagsList}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Tags" DisplayMemberBinding="{Binding Count}"/>
