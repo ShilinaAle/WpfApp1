@@ -10,11 +10,7 @@ namespace WpfApp1
     {
         public MainWindow()
         {
-            //ViewModel viewModel;
             InitializeComponent();
-            //DataContext = viewModel = new ViewModel();
-            ViewModel vm = new ViewModel(this);
-            vm.MainViewModel();
         }
 
     }
