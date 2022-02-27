@@ -6,13 +6,15 @@
         xmlns:local="clr-namespace:WpfApp1"
         xmlns:vm="clr-namespace:WpfApp1.ViewModel"
         mc:Ignorable="d"
-        Title="Check URL" Height="400" Width="800"
-        MinHeight="300" MinWidth="600" >
+        Title="Check URL" 
+        MinHeight="300" MinWidth="650" 
+        SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:VM/>
     </Window.DataContext>
 
-    <Grid Background="#FFF2FFE5">
+    
+    <Grid Background="#CECEF6" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*" ></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -25,9 +27,13 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
+
         <Button Command="{Binding StartCommand }" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0">Загрузить URL</Button>
         <Button Command="{Binding StopCommand }" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1">Остановить загрузку</Button>
-        <!--<TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding Clicks}"></TextBlock>-->
+        <TextBlock TextWrapping="Wrap" FontFamily="Century Gothic" FontWeight="UltraBold" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2">Обработано URL:</TextBlock>
+        <TextBlock FontFamily="Century Gothic" FontWeight="UltraBold" Text="{Binding CountOfUrl}" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2"></TextBlock>
+        <TextBlock TextWrapping="Wrap" FontFamily="Century Gothic" FontWeight="UltraBold" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="3">URL с максимальным количеством тегов:</TextBlock>
+        <TextBlock FontFamily="Century Gothic" FontWeight="UltraBold" Text="{Binding MaxUrl}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="4"></TextBlock>
         <Border Background="White" Grid.Column="1" Grid.RowSpan="5" Margin="30" Padding="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" CornerRadius="10">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"></DropShadowEffect>
