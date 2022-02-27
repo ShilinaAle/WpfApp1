@@ -18,4 +18,3 @@ https://yandex.ru/
 https://yandex.ru/
 https://yandex.ru/
 https://yandex.ru/
-https://docs.microsoft.com/ru-ru/dotnet/api/system.windows.forms.htmldocument?view=windowsdesktop-6.0

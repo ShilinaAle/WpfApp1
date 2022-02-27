@@ -23,18 +23,74 @@ namespace WpfApp1.ViewModel
         private ICommand _StopCommand;
         bool _cancel = false;
         bool _canStart = true;
+        int _countOfUrl = 0;
+        string _maxUrl = "";
+        int _maxTags = -1;
+        
+        public VM()
+        {
+            UrlWithTagsList = new ObservableCollection<UrlTags>();
+            _dispatcher = Dispatcher.CurrentDispatcher;
+        }
+        
+        public async Task StartAsync()
+        {
+            foreach (string line in File.ReadLines(@"..\..\text.txt"))
+            {
+                
+                if (_cancel)
+                    break;
 
+                await Task.Run(() =>
+                {
+                    CountOfUrl++;
+                    if (UrlProcessing.IsUrlValid(line))
+                    {
+                        _dispatcher.Invoke(new Action(() =>
+                        {
+                            int count = UrlProcessing.CountTeg(line);
+                            if (count > _maxTags)
+                            {
+                                MaxUrl = line;
+                                _maxTags = count;
+                            }
+                            Process.Start(line);
+                            _urlWithTagsList.Add(new UrlTags(line, count));
+                        }));
+                    }
+                });
+            }
+        }
 
+        public string MaxUrl
+        {
+            get { return _maxUrl; }
+            set
+            {
+                _maxUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int CountOfUrl
+        {
+            get { return _countOfUrl; }
+            set
+            {
+                _countOfUrl = value;
+                OnPropertyChanged();
+            }
+        }
         public UrlTags Utags
         {
             get { return utags; }
             set
             {
-                utags = value; 
+                utags = value;
                 OnPropertyChanged("Utags");
             }
         }
-        
+
         public ObservableCollection<UrlTags> UrlWithTagsList
         {
             get { return _urlWithTagsList; }
@@ -44,51 +100,6 @@ namespace WpfApp1.ViewModel
                 OnPropertyChanged();
             }
         }
-
-        public VM()
-        {
-            UrlWithTagsList = new ObservableCollection<UrlTags>();
-            _dispatcher = Dispatcher.CurrentDispatcher;
-        }
-        
-        public async Task StartAsync()
-        {
-            int i = 0;
-            foreach (string line in File.ReadLines(@"..\..\text.txt"))
-            {
-                if (_cancel)
-                    break;
-
-                i++;
-                await Task.Run(() =>
-                {
-                    if (IsUrlValid(line))
-                    {
-                        _dispatcher.Invoke(new Action(() =>
-                        {
-                            Process.Start("explorer.exe", line);
-                            _urlWithTagsList.Add(new UrlTags(line, i));
-                        }));
-                    }
-                });
-            }
-        }
-
-        private bool IsUrlValid(string url)
-        {
-            try
-            {
-                WebClient wc = new WebClient();
-                string HTMLSource = wc.DownloadString(url);
-                return true;
-            }
-            catch (Exception)
-            {
-                MessageBox.Show($"url {url} is not correct");
-                return false;
-            }
-        }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -114,7 +125,10 @@ namespace WpfApp1.ViewModel
             UrlWithTagsList.Clear();
             _cancel = false;
             _canStart = false;
+            CountOfUrl = 0;
             await StartAsync();
+            _cancel = true;
+            _canStart = true;
         }
 
         private bool CanStartExecute(object parameter)
