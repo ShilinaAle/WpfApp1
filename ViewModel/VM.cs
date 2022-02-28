@@ -36,7 +36,7 @@ namespace WpfApp1.ViewModel
         
         private async Task StartAsync()
         {
-            foreach (string line in File.ReadLines(@"..\..\text.txt"))
+            foreach (string line in File.ReadLines(@"..\..\Data\text.txt"))
             {
                 //если нажимается отмена - прерывает загрузку
                 if (_cancel)
