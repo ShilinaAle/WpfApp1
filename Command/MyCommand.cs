@@ -3,50 +3,44 @@ using System.Windows.Input;
 
 namespace WpfApp1.Command
 {
+    /// <summary>
+    /// Базовый класс комнады
+    /// </summary>
     class MyCommand : ICommand
     {
-        Action<object> executeAction;
-        Func<object, bool> canExecute;
-
+        Action<object> _executeAction;
+        Func<object, bool> _canExecute;
 
         public MyCommand(Action<object> executeAction, Func<object, bool> canExecute)
         {
-            this.canExecute = canExecute;
-            this.executeAction = executeAction;
+            _canExecute = canExecute;
+            _executeAction = executeAction;
         }
 
         public bool CanExecute(object parameter)
         {
-            if (canExecute == null)
+            if (_canExecute == null)
             {
                 return true;
-
             }
             else
             {
-                return canExecute(parameter);
+                return _canExecute(parameter);
             }
         }
 
         public event EventHandler CanExecuteChanged
         {
             add
-            {
+            { CommandManager.RequerySuggested += value; }
 
-                CommandManager.RequerySuggested += value;
-
-            }
             remove
-            {
-
-                CommandManager.RequerySuggested -= value;
-
-            }
+            { CommandManager.RequerySuggested -= value; }
         }
 
         public void Execute(object parameter)
         {
-            executeAction(parameter);
+            _executeAction(parameter);
         }
     }
 }

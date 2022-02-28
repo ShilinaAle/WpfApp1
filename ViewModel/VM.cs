@@ -17,13 +17,12 @@ namespace WpfApp1.ViewModel
 {
     class VM : INotifyPropertyChanged
     {
-        private UrlTags utags;
-        private ObservableCollection<UrlTags> _urlWithTagsList;
-        public Dispatcher _dispatcher;
-        private ICommand _StartCommand;
-        private ICommand _StopCommand;
-        bool _cancel = false;
-        bool _canStart = true;
+        ObservableCollection<UrlTags> _urlWithTagsList; //отображаемый лист
+        readonly Dispatcher _dispatcher; //для очереди в потоке
+        ICommand _StartCommand;
+        ICommand _StopCommand;
+        bool _cancel = false; //флаг для кнопки остановки загрузки
+        bool _canStart = true; //флаг для кнопки старта загрузки
         int _countOfUrl = 0;
         string _maxUrl = "";
         int _maxTags = -1;
@@ -35,11 +34,11 @@ namespace WpfApp1.ViewModel
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
         
-        public async Task StartAsync()
+        private async Task StartAsync()
         {
             foreach (string line in File.ReadLines(@"..\..\text.txt"))
             {
-                
+                //если нажимается отмена - прерывает загрузку
                 if (_cancel)
                     break;
 
@@ -63,23 +62,18 @@ namespace WpfApp1.ViewModel
                 });
             }
         }
-
-        public int CountTeg(string url)
+        //считает, сколько тэгов на странице
+        private int CountTeg(string url)
         {
             var hc = new HttpClient();
             var result = hc.GetStringAsync(url).Result;
 
             Regex regex = new Regex(@"<a ");
             MatchCollection matches = regex.Matches(result);
-            if (matches.Count > 0)
-            {
-                return matches.Count;
-            }
-            Console.WriteLine("Совпадений не найдено");
-            return 0;
+            return matches.Count;
         }
 
-        public bool IsUrlValid(string url)
+        private bool IsUrlValid(string url)
         {
             try
             {
@@ -93,7 +87,6 @@ namespace WpfApp1.ViewModel
                 return false;
             }
         }
-
         
         public int InvalidTags
         {
@@ -122,15 +115,6 @@ namespace WpfApp1.ViewModel
             {
                 _countOfUrl = value;
                 OnPropertyChanged();
-            }
-        }
-        public UrlTags Utags
-        {
-            get { return utags; }
-            set
-            {
-                utags = value;
-                OnPropertyChanged("Utags");
             }
         }
 
@@ -162,7 +146,7 @@ namespace WpfApp1.ViewModel
             }
         }
 
-
+        //меняет доступность кнопок, обнуляет счетчики, запускает подсчет
         private async void StartExecute(object parameter)
         {
             UrlWithTagsList.Clear();
@@ -193,7 +177,6 @@ namespace WpfApp1.ViewModel
                 return _StopCommand;
             }
         }
-
 
         private void StopExecute(object parameter)
         {
