@@ -34,7 +34,7 @@
         <TextBlock TextWrapping="Wrap" FontFamily="Century Gothic" FontWeight="UltraBold" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="2">Некорректных URL:</TextBlock>
         <TextBlock FontFamily="Century Gothic" FontWeight="UltraBold" Text="{Binding InvalidTags}" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="2"></TextBlock>
         <TextBlock TextWrapping="Wrap" FontFamily="Century Gothic" FontWeight="UltraBold" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="3">URL с максимальным количеством тегов:</TextBlock>
-        <TextBlock FontFamily="Century Gothic" FontWeight="UltraBold" Text="{Binding MaxUrl}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="4"></TextBlock>
+        <TextBlock TextTrimming="CharacterEllipsis" FontFamily="Century Gothic" FontWeight="UltraBold" Text="{Binding MaxUrl}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="4"></TextBlock>
         <Border Background="White" Grid.Column="1" Grid.RowSpan="5" Margin="30" Padding="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" CornerRadius="10">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"></DropShadowEffect>

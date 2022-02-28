@@ -1,35 +1,33 @@
 ﻿namespace WpfApp1.Model
 {
+    /// <summary>
+    /// Количество тэгов на конкретный url
+    /// </summary>
     class UrlTags
     {
-        private string url;
-        private int tags;
+        string _url;
+        int _tags;
+
         public UrlTags(string url, int count)
         {
-            this.url = url;
-            tags = count;
+            _url = url;
+            _tags = count;
         }
+
         public string Url
         {
             get
-            {
-                return url;
-            }
+            { return _url; }
             set
-            {
-                url = value;
-            }
+            { _url = value; }
         }
+
         public int Tags
         {
             get
-            {
-                return tags;
-            }
+            { return _tags; }
             set
-            {
-                tags = value;
-            }
+            { _tags = value; }
         }
     }
 }
